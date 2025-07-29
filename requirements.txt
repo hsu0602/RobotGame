@@ -1,0 +1,6 @@
+# engine
+pydantic>=2.6,<3.0
+
+# 若日後要做測試 / CLI / 進階功能，可再加：
+# pytest>=8.0
+# typer>=0.12
