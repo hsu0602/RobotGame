@@ -1,10 +1,73 @@
 <!doctype html>
-<meta charset="utf-8" />
-<title>Treasure Bot Replay</title>
-<link rel="stylesheet" href="style.css" />
-<main>
-  <h1>Treasure Bot Replay</h1>
-  <input type="file" id="pickLog" accept=".json" />
-  <canvas id="board" width="600" height="600"></canvas>
-</main>
-<script src="main.js"></script>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Treasure Bot Replay</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- 左側分數 -->
+      <aside class="scorecard left" id="scoreAcard">
+        <div class="label">Player A</div>
+        <div class="score" id="scoreA">0</div>
+      </aside>
+
+      <!-- 中央舞台 -->
+      <main class="stage">
+        <header class="toolbar">
+          <h1>Treasure Bot Replay</h1>
+          <div class="controls">
+            <label class="file">
+              <input type="file" id="pickLog" accept=".json" />
+              <span>載入對戰紀錄 (JSON)</span>
+            </label>
+
+            <button id="toggleBtn" class="btn" disabled>▶︎ 播放</button>
+            <button id="restartBtn" class="btn" disabled>↺ 重新開始</button>
+
+            <label class="speed">
+              速度
+              <input
+                type="range"
+                id="speedRange"
+                min="0.25"
+                max="3"
+                step="0.25"
+                value="1"
+              />
+              <span id="speedLabel">×1.0</span>
+            </label>
+
+            <div class="turn" id="turnLabel">Turn – / –</div>
+          </div>
+        </header>
+
+        <div class="board-wrap" id="boardWrap" aria-label="Replay Board">
+          <canvas id="board"></canvas>
+        </div>
+
+        <footer class="legend">
+            <div class="legend-item"><span class="chip chip-b"></span> 地雷 (b)</div>
+            <div class="legend-item"><span class="chip chip-s"></span> 倍增星 (s)</div>
+            <div class="legend-item"><span class="chip chip-t"></span> 毒星星 (t)</div>
+            <div class="legend-item"><span class="chip chip-m"></span> 加分 (m)</div>
+            <div class="legend-item"><span class="chip chip-n"></span> 減分 (n)</div>
+        </footer>
+
+      </main>
+
+      <!-- 右側分數 -->
+      <aside class="scorecard right" id="scoreBcard">
+        <div class="label">Player B</div>
+        <div class="score" id="scoreB">0</div>
+      </aside>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
