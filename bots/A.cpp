@@ -1,112 +1,150 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-// coordinates
-struct coord{
-    int x;
-    int y;
+const int MAX = 20;
+
+struct Pos {
+    int x, y;
+    bool operator==(const Pos &o) const { return x == o.x && y == o.y; }
 };
 
-// inputs
-char mp[20][20];
-int r, m, n;
-int A_score, B_score;
-char me;
+char grid[MAX][MAX];
+int m, n, round_num;
+int Ascore, Bscore;
+char player;
+Pos myPos;
 
-//instructions and directions
-string instructions[4] = {"UP", "DOWN", "LEFT", "RIGHT"};
-int dirx[4] = { -1, 1,  0, 0};
-int diry[4] = {  0, 0, -1, 1};
+string directions[4] = {"UP", "DOWN", "LEFT", "RIGHT"};
+int dx[4] = {-1, 1, 0, 0};
+int dy[4] = {0, 0, -1, 1};
 
-void get_input(){
+// 判斷是否在地圖範圍內
+bool in_grid(int x, int y) {
+    return x >= 0 && x < m && y >= 0 && y < n;
+}
 
-    cin >> r;
-    cin >> m >> n;
+// 評估地圖格子分數(路徑搜尋用)
+int eval_tile(char c, int cur_score) {
+    switch(c) {
+        case 'm': return 10;           // 蘑菇 +1分(吸引走向)
+        case 'n': return -10;          // 毒蘑菇 -1分(避開)
+        case 's': return cur_score;    // 無敵星星 *2效果評分
+        case 't': return -(cur_score / 2); // 無敵毒星星 /2效果評分
+        case 'b': return -100;         // 地雷負分，BFS避免踩
+        default: return 0;
+    }
+}
 
-    for(int i = 0; i < m; i++){
-        for(int j = 0; j < n; j++){
-            cin >> mp[i][j];
+// 找玩家位置
+void find_my_position() {
+    for (int i=0; i<m; i++) {
+        for (int j=0; j<n; j++) {
+            if (grid[i][j] == player || grid[i][j] == 'X') {
+                myPos = {i, j};
+                return;
+            }
+        }
+    }
+}
+
+// BFS尋找最近且分數最高寶物，回傳第一步方向索引，找不到回-1
+int bfs_best_target() {
+    queue<Pos> q;
+    bool visited[MAX][MAX] = {};
+    int dist[MAX][MAX];
+    Pos parent[MAX][MAX];
+
+    for (int i=0; i<m; i++)
+        for (int j=0; j<n; j++)
+            dist[i][j] = INT_MAX;
+
+    q.push(myPos);
+    visited[myPos.x][myPos.y] = true;
+    dist[myPos.x][myPos.y] = 0;
+
+    vector<Pos> candidates;
+    int best_score = INT_MIN;
+
+    while (!q.empty()) {
+        Pos cur = q.front(); q.pop();
+
+        char c = grid[cur.x][cur.y];
+        int val = eval_tile(c, (player == 'A') ? Ascore : Bscore);
+
+        if (val > 0 && !(cur == myPos)) { // 找到目標寶物
+            if (val > best_score) {
+                candidates.clear();
+                candidates.push_back(cur);
+                best_score = val;
+            } else if (val == best_score) {
+                candidates.push_back(cur);
+            }
+        }
+
+        for (int d=0; d<4; d++) {
+            int nx = cur.x + dx[d], ny = cur.y + dy[d];
+            if (!in_grid(nx, ny)) continue;
+            if (visited[nx][ny]) continue;
+            if (grid[nx][ny] == 'b') continue; // BFS避免地雷
+            visited[nx][ny] = true;
+            dist[nx][ny] = dist[cur.x][cur.y] + 1;
+            parent[nx][ny] = cur;
+            q.push({nx, ny});
         }
     }
 
-    cin >> A_score >> B_score >> me;
+    if (candidates.empty()) return -1;
 
-    return; // void function, no return entity
-}
-
-coord get_my_pos(){
-
-    for(int i = 0; i < m; i++){
-        for(int j = 0; j < n; j++){
-            if(mp[i][j] == me)
-                return {i, j};
+    Pos target = candidates[0];
+    int min_dist = dist[target.x][target.y];
+    for (auto &c : candidates) {
+        if (dist[c.x][c.y] < min_dist) {
+            target = c;
+            min_dist = dist[c.x][c.y];
         }
     }
 
-    return {0, 0}; // return coord(0, 0) if unexpected
+    Pos cur = target;
+    while (!(parent[cur.x][cur.y] == myPos)) {
+        cur = parent[cur.x][cur.y];
+    }
 
-}
-
-
-bool move_is_valid(coord pos, string ins){
-
-    for(int i = 0; i < 4; i++){
-        if(instructions[i] == ins){
-            return (
-                pos.x + dirx[i] >= 0 && pos.x + dirx[i]  < m &&
-                pos.y + diry[i] >= 0 && pos.y + diry[i] < n
-            );
+    for (int d=0; d<4; d++) {
+        if (myPos.x + dx[d] == cur.x && myPos.y + dy[d] == cur.y) {
+            return d;
         }
     }
-    return false; // return false if "ins" unexpected
+    return -1;
 }
 
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-string pick_instructions(){
-
-    return instructions[(int)(rand() % 4)];
-
-}
-
-/*int get_millis_now(){
-    auto start = chrono::system_clock::now();
-    auto duration = start.time_since_epoch();
-    return (int)chrono::duration_cast<chrono::milliseconds>(duration).count();
-}
-void timer(){
-
-    static int mode = 0;
-    static int start_time;
-    static int end_time;
-
-    if(mode == 0){
-        start_time =  get_millis_now();
-        mode  = 1;
-    }else{
-        end_time =  get_millis_now();
-        cerr << "[Info] Elapsed Time : " << end_time - start_time << " ms" << endl;
-        mode = 0;
+    cin >> round_num >> m >> n;
+    for (int i=0; i<m; i++) {
+        for (int j=0; j<n; j++) {
+            cin >> grid[i][j];
+        }
     }
-    return;
-}*/
+    cin >> Ascore >> Bscore >> player;
 
+    find_my_position();
 
-int main(){
+    int d = bfs_best_target();
 
-    get_input();
-    srand(r);
-    //timer(); //start_timer
+    if (d == -1) {
+        // 找不到寶物，隨機走合法方向
+        vector<int> legal;
+        for (int i=0; i<4; i++) {
+            int nx = myPos.x + dx[i], ny = myPos.y + dy[i];
+            if (in_grid(nx, ny)) legal.push_back(i);
+        }
+        if (legal.empty()) d = 0;
+        else d = legal[rand() % legal.size()];
+    }
 
-    coord my_pos = get_my_pos();
-
-    // random pick one
-    string ins;
-    do{
-        ins = pick_instructions();
-    }while(!move_is_valid(my_pos, ins));
-    cout << ins << endl;
-
-    //timer(); //end_timer
+    cout << directions[d] << "\n";
 
     return 0;
 }

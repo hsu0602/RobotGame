@@ -19,10 +19,10 @@ class PlayerState:
 # --- 遊戲主體 ------------------------------------------------------
 
 class TreasureGame:
-    MAX_TURN = 1000
-    TIME_LIMIT_MS = 1500
+    MAX_TURN = 500
+    TIME_LIMIT_MS = 1000
 
-    def __init__(self, m: int = 8, n: int = 7, seed: int | None = None) -> None:
+    def __init__(self, m: int = 10, n: int = 10, seed: int | None = None) -> None:
         self.rng = random.Random(seed)
         self.M, self.N = m, n
         self.turn = 1

@@ -16,14 +16,23 @@
     <div class="controls">
       <label>
         ⏩ 速度
-        <input id="speed" type="range" min="0.1" max="2" step="0.1" value="1" />
+        <input id="speed" type="range" min="0.1" max="5" step="0.1" value="1" />
         <span id="speedVal">1 ×</span>
       </label>
       <button id="toggleBtn">⏸︎ 暫停</button>
       <input id="pickLog" type="file" accept=".json" />
     </div>
   </section>
-
+  <section class="upload-box">
+    <h2>上傳 Bot 並對戰</h2>
+    <form id="battleForm">
+      A.cpp: <input type="file" name="file_a" accept=".cpp" required>
+      B.cpp: <input type="file" name="file_b" accept=".cpp" required>
+      <button>Run Judge</button>
+    </form>
+    <progress id="prog" value="0" max="100" style="width:100%; display:none;"></progress>
+    <pre id="serverMsg"></pre>
+  </section>
   <!-- 圖例 -->
   <aside class="legend">
     <h2>圖例</h2>

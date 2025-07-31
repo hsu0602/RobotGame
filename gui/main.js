@@ -26,6 +26,9 @@ const pickLog = document.getElementById('pickLog');
 const speedEl = document.getElementById('speed');
 const speedVal= document.getElementById('speedVal');
 const toggleBtn = document.getElementById('toggleBtn');
+const form   = document.getElementById('battleForm');
+const prog   = document.getElementById('prog');
+const msgBox = document.getElementById('serverMsg');
 
 /* ===========================  資料  =========================== */
 let replay = [], turn = 0;
@@ -38,6 +41,44 @@ pickLog.addEventListener('change', async e => {
   isPaused = false;
   toggleBtn.textContent = '⏸︎ 暫停';
   playNext();
+});
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const fd = new FormData(form);
+  prog.style.display = 'block';
+  prog.value = 10;
+  msgBox.textContent = 'Uploading & compiling...\n';
+
+  // 目前 FastAPI 端沒有 chunk 回報，用固定節點模擬進度
+  const timer = setInterval(() => {
+    prog.value = Math.min(95, prog.value + 5);
+  }, 700);
+
+  try {
+    const res = await fetch('http://localhost:8000/run_match', {
+      method:'POST', body:fd
+    });
+    clearInterval(timer);
+    prog.value = 100;
+
+    const data = await res.json();
+    if (!data.ok) throw new Error(`${data.stage}: ${data.msg}`);
+
+    msgBox.textContent += '✔ Judge finished!\n' +
+        `Log saved: ${data.log_path}\n` +
+        '👉 下方 Replay 區塊可直接載入此檔案。';
+
+    // 方便使用者—自動載入剛完成的 log
+    const logUrl = data.log_path;
+    const blob   = await fetch(logUrl).then(r=>r.blob());
+    const file   = new File([blob], logUrl.split('/').pop(), {type:'application/json'});
+    loadReplayFromFile(file);           // <-- 直接沿用原本回放函式
+  } catch(err){
+    clearInterval(timer);
+    prog.style.display='none';
+    msgBox.textContent += '❌ ' + err;
+  }
 });
 
 speedEl.addEventListener('input', () => {

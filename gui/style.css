@@ -40,6 +40,11 @@ main       { display: flex; gap: 1.5rem; padding: 1rem; }
 .scoreboard .score.a { color:#2196f3; }
 .scoreboard .score.b { color:#ff9800; }
 
+
+.upload-box { border:1px solid #444; padding:.7rem; margin-bottom:1rem; }
+#prog      { height:1rem; }
+#serverMsg { white-space:pre-wrap; font-size:.9rem; color:#ccc; }
+
 /* Canvas 邊框 ------------------------------------------------------ */
 canvas { border: 1px solid #aaa; }
 
