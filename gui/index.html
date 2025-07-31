@@ -2,9 +2,42 @@
 <meta charset="utf-8" />
 <title>Treasure Bot Replay</title>
 <link rel="stylesheet" href="style.css" />
+
 <main>
-  <h1>Treasure Bot Replay</h1>
-  <input type="file" id="pickLog" accept=".json" />
-  <canvas id="board" width="600" height="600"></canvas>
+  <section class="board-wrapper">
+    <canvas id="board" width="600" height="600"></canvas>
+    <div class="scoreboard">
+      <span id="turnBox">Turn 0</span>
+      <span id="scoreA" class="score a">A 0</span>
+      <span id="scoreB" class="score b">B 0</span>
+    </div>
+
+    <!-- 控制列 -->
+    <div class="controls">
+      <label>
+        ⏩ 速度
+        <input id="speed" type="range" min="0.1" max="2" step="0.1" value="1" />
+        <span id="speedVal">1 ×</span>
+      </label>
+      <button id="toggleBtn">⏸︎ 暫停</button>
+      <input id="pickLog" type="file" accept=".json" />
+    </div>
+  </section>
+
+  <!-- 圖例 -->
+  <aside class="legend">
+    <h2>圖例</h2>
+    <ul>
+      <li><img src="img/A.png" alt="A"> 玩家 A (A)</li>
+      <li><img src="img/B.png" alt="B"> 玩家 B (B)</li>
+      <li><img src="img/bo.png" alt="bomb"> 地雷 (b)</li>
+      <li><img src="img/m.png" alt="+1"> +1 寶石 (m)</li>
+      <li><img src="img/n.png" alt="-1"> −1 寶石 (n)</li>
+      <li><img src="img/s.png" alt="×2"> ×2 加倍 (s)</li>
+      <li><img src="img/t.png" alt="÷2"> ÷2 減半 (t)</li>
+      <li><img src="img/X.png" alt="battle"> 雙方同格 (X)</li>
+    </ul>
+  </aside>
 </main>
+
 <script src="main.js"></script>

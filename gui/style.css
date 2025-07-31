@@ -1,2 +1,50 @@
-body { font-family: system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; }
-canvas { border: 1px solid #ccc; margin-top: 1rem; }
+/* 版面配置 ------------------------------------------------------- */
+body, html { margin: 0; font-family: system-ui, sans-serif; }
+main       { display: flex; gap: 1.5rem; padding: 1rem; }
+.board-wrapper { position: relative; }
+
+/* 控制列 --------------------------------------------------------- */
+.controls { margin-top: .5rem; display: flex; gap: .8rem; align-items: center; }
+#speed    { vertical-align: middle; }
+#speedVal { min-width: 2.5rem; display: inline-block; text-align: right; }
+#toggleBtn { padding: .2rem .6rem; }
+
+/* Legend --------------------------------------------------------- */
+.legend ul { list-style: none; padding: 0; margin: .4rem 0 0; }
+.legend li img {
+  width: 32px; height: 32px;
+  vertical-align: middle;
+  margin-right: .4rem;
+  image-rendering: pixelated;   /* 保持俐落邊緣 */
+}
+.legend li { margin-bottom: .35rem; }
+
+/* 顏色 – 若有 GUI/img/*.png 同名 icon，Canvas 會畫 icon；Legend 仍用顏色塊 -------- */
+.cell { background: #fff; }
+.cell.A { background:#2196f3; }
+.cell.B { background:#ff9800; }
+.cell.bo { background:#000000;   }
+.cell.m { background:#4caf50;}
+.cell.n { background:#f44336;}
+.cell.s { background:#ffeb3b;}
+.cell.t { background:#9c27b0;}
+.cell.X { background:#795548;}
+
+/* scoreboard ------------------------------------------------------ */
+.scoreboard {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: .4rem;
+  display: flex; gap: 1rem; align-items: center;
+}
+.scoreboard .score.a { color:#2196f3; }
+.scoreboard .score.b { color:#ff9800; }
+
+/* Canvas 邊框 ------------------------------------------------------ */
+canvas { border: 1px solid #aaa; }
+
+/* 手機排版：Legend 捲到下方 --------------------------------------- */
+@media (max-width: 700px) {
+  main { flex-direction: column; }
+  .legend { order: 2; }
+}

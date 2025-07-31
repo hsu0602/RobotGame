@@ -20,7 +20,7 @@ class PlayerState:
 
 class TreasureGame:
     MAX_TURN = 1000
-    TIME_LIMIT_MS = 1000
+    TIME_LIMIT_MS = 1500
 
     def __init__(self, m: int = 8, n: int = 7, seed: int | None = None) -> None:
         self.rng = random.Random(seed)
@@ -62,10 +62,10 @@ class TreasureGame:
         self.grid[self.B.x][self.B.y] = "B"
 
     def _spawn_items(self) -> List[dict]:
-        # 每回合隨機挑 0~2 個空格丟道具，可自行調整機率
+        # 每回合隨機挑 0~1 個空格丟道具，可自行調整機率
         spawned = []
-        for _ in range(self.rng.randint(0, 2)):
-            x, y = self.rng.randrange(self.M), self.rng.randrange(self.N)
+        for _ in range(self.rng.randint(0, 1)):
+            x, y = self.rng.randrange(0, self.M), self.rng.randrange(0, self.N)
             if self.grid[x][y] == ".":
                 item = self.rng.choice(list("bmnst"))
                 self.grid[x][y] = item

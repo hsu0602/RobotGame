@@ -63,13 +63,7 @@ bool move_is_valid(coord pos, string ins){
 
 
 string pick_instructions(){
-
-    // randint in [a, b]
-    srand(time(NULL));
-    int a = 0, b = 3;
-    int r = rand() % (b - a + 1) + a;
-
-    return instructions[r];
+    return instructions[(int)(rand() % 4)];
 
 }
 
@@ -99,7 +93,7 @@ void timer(){
 int main(){
 
     get_input();
-
+    srand(r + m + n);
     //timer(); //start_timer
 
     coord my_pos = get_my_pos();
